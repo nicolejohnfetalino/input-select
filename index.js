@@ -3,10 +3,9 @@ import Select from 'react-select';
 import { size, keyBy } from 'lodash';
 import InputDate from '@volenday/input-date';
 import { diff } from 'deep-object-diff';
+import { Button, Form, Popover } from 'antd';
 
-// ant design
-import Button from 'antd/es/button';
-import Popover from 'antd/es/popover';
+import './styles.css';
 
 export default class InputSelect extends Component {
 	state = { hasChange: false, isPopoverVisible: false };
@@ -19,9 +18,7 @@ export default class InputSelect extends Component {
 			options.splice(options.indexOf('N/A'), 1);
 		}
 
-		return options.map(d => {
-			return { value: d, label: d };
-		});
+		return options.map(d => ({ value: d, label: d }));
 	}
 
 	getValue() {
@@ -102,38 +99,19 @@ export default class InputSelect extends Component {
 
 	render() {
 		const { hasChange } = this.state;
-		const { id, action, label = '', required = false, withLabel = false, historyTrack = false } = this.props;
+		const { action, label = '', historyTrack = false, required = false, withLabel = false } = this.props;
 
-		if (withLabel) {
-			if (historyTrack) {
-				return (
-					<div className="form-group">
-						<label for={id}>{required ? `*${label}` : label}</label>
-						{hasChange && action !== 'add' && this.renderPopover()}
-						{this.renderSelect()}
-					</div>
-				);
-			}
+		const formItemCommonProps = {
+			colon: false,
+			label: withLabel ? label : false,
+			required
+		};
 
-			return (
-				<div className="form-group">
-					<label for={id}>{required ? `*${label}` : label}</label>
-					{this.renderSelect()}
-				</div>
-			);
-		} else {
-			if (historyTrack) {
-				return (
-					<div class="form-group">
-						{hasChange && action !== 'add' && this.renderPopover()}
-						{this.renderInput()}
-					</div>
-				);
-			}
-
-			return this.renderSelect();
-		}
-
-		return null;
+		return (
+			<Form.Item {...formItemCommonProps}>
+				{historyTrack && hasChange && action !== 'add' && this.renderPopover()}
+				{this.renderSelect()}
+			</Form.Item>
+		);
 	}
 }
