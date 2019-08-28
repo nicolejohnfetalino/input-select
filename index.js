@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import InputDate from '@volenday/input-date';
 import Select from 'react-select';
-import { diff } from 'deep-object-diff';
 import { size, keyBy } from 'lodash';
+import InputDate from '@volenday/input-date';
+import { diff } from 'deep-object-diff';
 
 // ant design
-import { Button, Popover } from 'antd';
+import Button from 'antd/es/button';
+import Popover from 'antd/es/popover';
 
 export default class InputSelect extends Component {
 	state = { hasChange: false, isPopoverVisible: false };
@@ -30,7 +31,16 @@ export default class InputSelect extends Component {
 	}
 
 	renderSelect() {
-		const { disabled = false, id, label = '', multiple, onChange, placeholder = '', value = '' } = this.props;
+		const {
+			disabled = false,
+			action,
+			id,
+			label = '',
+			multiple,
+			onChange,
+			placeholder = '',
+			value = ''
+		} = this.props;
 		const list = keyBy(this.renderOptions(), 'value');
 
 		return (
@@ -38,11 +48,9 @@ export default class InputSelect extends Component {
 				isDisabled={disabled}
 				isMulti={multiple}
 				onChange={e => {
-					if (size(diff(list[value], e))) {
-						this.setState({ hasChange: true });
-					} else {
-						this.setState({ hasChange: false });
-					}
+					this.setState({
+						hasChange: action === 'add' ? false : size(diff(list[value], e)) ? true : false
+					});
 
 					onChange(id, e ? e.value : null);
 				}}
@@ -94,14 +102,14 @@ export default class InputSelect extends Component {
 
 	render() {
 		const { hasChange } = this.state;
-		const { id, label = '', required = false, withLabel = false, historyTrack = false } = this.props;
+		const { id, action, label = '', required = false, withLabel = false, historyTrack = false } = this.props;
 
 		if (withLabel) {
 			if (historyTrack) {
 				return (
 					<div className="form-group">
 						<label for={id}>{required ? `*${label}` : label}</label>
-						{hasChange && this.renderPopover()}
+						{hasChange && action !== 'add' && this.renderPopover()}
 						{this.renderSelect()}
 					</div>
 				);
@@ -117,7 +125,7 @@ export default class InputSelect extends Component {
 			if (historyTrack) {
 				return (
 					<div class="form-group">
-						{hasChange && this.renderPopover()}
+						{hasChange && action !== 'add' && this.renderPopover()}
 						{this.renderInput()}
 					</div>
 				);
