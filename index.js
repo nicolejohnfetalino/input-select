@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
-import { size, keyBy } from 'lodash';
+import { keyBy } from 'lodash';
 import InputDate from '@volenday/input-date';
-import { diff } from 'deep-object-diff';
-import { Button, Form, Popover } from 'antd';
+import { Button, Form, Popover, Select } from 'antd';
+
+const { Option } = Select;
 
 import './styles.css';
 
@@ -21,41 +21,34 @@ export default class InputSelect extends Component {
 		return options.map(d => ({ value: d, label: d }));
 	}
 
-	getValue() {
-		const { value } = this.props;
-		let list = keyBy(this.renderOptions(), 'value');
-		return value ? list[value] : null;
-	}
-
 	renderSelect() {
-		const {
-			disabled = false,
-			action,
-			id,
-			label = '',
-			multiple,
-			onChange,
-			placeholder = '',
-			value = ''
-		} = this.props;
+		const { disabled = false, action, id, label = '', multiple, onChange, placeholder = '', value } = this.props;
 		const list = keyBy(this.renderOptions(), 'value');
-
+		const options = this.renderOptions();
 		return (
 			<Select
-				isDisabled={disabled}
-				isMulti={multiple}
+				allowClear
+				showSearch
+				disabled={disabled}
+				mode={multiple ? 'multiple' : 'default'}
 				onChange={e => {
 					this.setState({
-						hasChange: action === 'add' ? false : size(diff(list[value], e)) ? true : false
+						hasChange: action === 'add' ? false : list[e].value != e ? true : false
 					});
 
-					onChange(id, e ? e.value : null);
+					onChange(id, e);
 				}}
-				options={this.renderOptions()}
 				placeholder={placeholder || label || id}
-				value={this.getValue()}
-				styles={{ menu: provided => ({ ...provided, zIndex: 999 }) }}
-			/>
+				style={{ width: '100%' }}
+				value={value ? value : ''}>
+				{options.map(e => {
+					return (
+						<Option key={e.value} value={e.value}>
+							{e.label}
+						</Option>
+					);
+				})}
+			</Select>
 		);
 	}
 
