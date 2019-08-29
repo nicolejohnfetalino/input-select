@@ -54,12 +54,8 @@ module.exports = {
 	},
 	externals: {
 		'@volenday/input-date': 'commonjs2 @volenday/input-date',
-		'deep-object-diff': 'commonjs2 deep-object-diff',
-		'react-select': 'commonjs2 react-select',
-		lodash: 'commonjs2 lodash',
 		antd: 'commonjs2 antd',
-		react: 'commonjs2 react',
-		unidecode: 'commonjs2 unidecode'
+		react: 'commonjs2 react'
 	},
 	plugins: [
 		new webpack.optimize.AggressiveMergingPlugin(),

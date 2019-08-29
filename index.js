@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { keyBy } from 'lodash';
 import InputDate from '@volenday/input-date';
 import { Button, Form, Popover, Select } from 'antd';
-
-const { Option } = Select;
 
 import './styles.css';
 
@@ -18,36 +15,40 @@ export default class InputSelect extends Component {
 			options.splice(options.indexOf('N/A'), 1);
 		}
 
-		return options.map(d => ({ value: d, label: d }));
+		return [...options];
 	}
 
 	renderSelect() {
-		const { disabled = false, action, id, label = '', multiple, onChange, placeholder = '', value } = this.props;
-		const list = keyBy(this.renderOptions(), 'value');
+		const {
+			disabled = false,
+			action,
+			id,
+			label = '',
+			multiple,
+			onChange,
+			placeholder = '',
+			value = ''
+		} = this.props;
 		const options = this.renderOptions();
+
 		return (
 			<Select
 				allowClear
-				showSearch
 				disabled={disabled}
 				mode={multiple ? 'multiple' : 'default'}
 				onChange={e => {
-					this.setState({
-						hasChange: action === 'add' ? false : list[e].value != e ? true : false
-					});
-
+					this.setState({ hasChange: action === 'add' ? false : true });
 					onChange(id, e);
 				}}
 				placeholder={placeholder || label || id}
+				showSearch
 				style={{ width: '100%' }}
 				value={value ? value : ''}>
-				{options.map(e => {
-					return (
-						<Option key={e.value} value={e.value}>
-							{e.label}
-						</Option>
-					);
-				})}
+				{options.map(e => (
+					<Select.Option key={e} value={e}>
+						{e}
+					</Select.Option>
+				))}
 			</Select>
 		);
 	}
