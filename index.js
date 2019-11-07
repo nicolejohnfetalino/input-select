@@ -41,12 +41,18 @@ export default class InputSelect extends Component {
 	}
 
 	render() {
-		const { error, label = '', required = false, withLabel = false } = this.props;
+		const { error, extra = null, label = '', required = false, withLabel = false } = this.props;
 
 		const formItemCommonProps = {
 			colon: false,
 			help: error ? error : '',
-			label: withLabel ? label : false,
+			label: withLabel ? (
+				<>
+					<div style={{ float: 'right' }}>{extra}</div> <span class="label">{label}</span>
+				</>
+			) : (
+				false
+			),
 			required,
 			validateStatus: error ? 'error' : 'success'
 		};
