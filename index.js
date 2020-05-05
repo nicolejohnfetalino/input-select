@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Form, Select } from 'antd';
 
 import './styles.css';
 
-export default class InputSelect extends Component {
-	renderOptions() {
-		const { list } = this.props;
-		let options = [...list];
+export default ({
+	disabled = false,
+	error,
+	extra = null,
+	id,
+	label = '',
+	list,
+	multiple,
+	onChange,
+	placeholder = '',
+	required = false,
+	value = '',
+	withLabel = false
+}) => {
+	let options = [...list];
+	if (options.includes('N/A')) options.splice(options.indexOf('N/A'), 1);
 
-		if (options.includes('N/A')) {
-			options.splice(options.indexOf('N/A'), 1);
-		}
-
-		return [...options];
-	}
-
-	renderSelect() {
-		const { disabled = false, id, label = '', multiple, onChange, placeholder = '', value = '' } = this.props;
-		const options = this.renderOptions();
-
+	const renderSelect = () => {
 		return (
 			<Select
 				disabled={disabled}
@@ -37,25 +39,21 @@ export default class InputSelect extends Component {
 				))}
 			</Select>
 		);
-	}
+	};
 
-	render() {
-		const { error, extra = null, label = '', required = false, withLabel = false } = this.props;
+	const formItemCommonProps = {
+		colon: false,
+		help: error ? error : '',
+		label: withLabel ? (
+			<>
+				<div style={{ float: 'right' }}>{extra}</div> <span class="label">{label}</span>
+			</>
+		) : (
+			false
+		),
+		required,
+		validateStatus: error ? 'error' : 'success'
+	};
 
-		const formItemCommonProps = {
-			colon: false,
-			help: error ? error : '',
-			label: withLabel ? (
-				<>
-					<div style={{ float: 'right' }}>{extra}</div> <span class="label">{label}</span>
-				</>
-			) : (
-				false
-			),
-			required,
-			validateStatus: error ? 'error' : 'success'
-		};
-
-		return <Form.Item {...formItemCommonProps}>{this.renderSelect()}</Form.Item>;
-	}
-}
+	return <Form.Item {...formItemCommonProps}>{renderSelect()}</Form.Item>;
+};
