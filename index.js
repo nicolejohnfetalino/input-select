@@ -19,7 +19,6 @@ export default ({
 }) => {
 	let options = [...list];
 	if (options.includes('N/A')) options.splice(options.indexOf('N/A'), 1);
-
 	const renderSelect = () => {
 		return (
 			<Select
@@ -32,11 +31,15 @@ export default ({
 				showSearch
 				style={{ width: '100%' }}
 				value={value ? value : ''}>
-				{options.map(e => (
-					<Select.Option key={e} value={e}>
-						{e}
-					</Select.Option>
-				))}
+				{options.map(e => {
+					let val = e;
+					e === 'All' ? (val = 'all') : (val = e);
+					return (
+						<Select.Option key={e} value={val}>
+							{e}
+						</Select.Option>
+					);
+				})}
 			</Select>
 		);
 	};
